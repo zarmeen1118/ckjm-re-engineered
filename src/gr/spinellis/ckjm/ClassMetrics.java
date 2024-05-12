@@ -26,7 +26,7 @@ import java.util.HashSet;
  *
  * @see ClassVisitor
  * @version $Revision: 1.12 $
- * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
+ * @author &lt;a href=&quot;http://www.spinellis.gr&quot;&gt;Diomidis Spinellis&lt;/a&gt;
  */
 public class ClassMetrics {
     /** Weighted methods per class */
@@ -52,12 +52,12 @@ public class ClassMetrics {
 
     /** Default constructor. */
     ClassMetrics() {
-	wmc = 0;
-	noc = 0;
-	cbo = 0;
-	npm = 0;
-	visited = false;
-	afferentCoupledClasses = new HashSet<String>();
+        wmc = 0;
+        noc = 0;
+        cbo = 0;
+        npm = 0;
+        visited = false;
+        afferentCoupledClasses = new HashSet<>();
     }
 
     /** Increment the weighted methods count */
@@ -76,7 +76,7 @@ public class ClassMetrics {
     public int getRfc() { return rfc; }
 
     /** Set the depth of inheritence tree metric */
-    public void setDit(int d) { dit = d; }
+    public void setDit(int depth) { dit = depth; }
     /** Return the depth of the class's inheritance tree */
     public int getDit() { return dit; }
 
@@ -88,12 +88,12 @@ public class ClassMetrics {
     /** Return the class's lack of cohesion in methods metric */
     public int getLcom() { return lcom; }
     /** Set the class's lack of cohesion in methods metric */
-    public void setLcom(int l) { lcom = l; }
+    public void setLcom(int lcomValue) { lcom = lcomValue; }
 
     /** Return the class's afferent couplings metric */
     public int getCa() { return afferentCoupledClasses.size(); }
     /** Add a class to the set of classes that depend on this class */
-    public void addAfferentCoupling(String name) { afferentCoupledClasses.add(name); }
+    public void addAfferentCoupling(String className) { afferentCoupledClasses.add(className); }
 
     /** Increment the number of public methods count */
     public void incNpm() { npm++; }
@@ -106,25 +106,32 @@ public class ClassMetrics {
     public void setPublic() { isPublicClass = true; }
 
     /** Return true if the class name is part of the Java SDK */
-    public static boolean isJdkClass(String s) {
-	return (s.startsWith("java.") ||
-		s.startsWith("javax.") ||
-		s.startsWith("org.omg.") ||
-		s.startsWith("org.w3c.dom.") ||
-		s.startsWith("org.xml.sax."));
+    public static boolean isJdkClass(String className) {
+        switch (className.substring(0, Math.min(className.length(), 6))) {
+            case "java.":
+            case "javax.":
+            case "org.om":
+            case "org.w3":
+            case "org.xm":
+                return true;
+            default:
+                return false;
+        }
     }
 
     /** Return the 6 CK metrics plus Ce as a space-separated string */
+    @Override
     public String toString() {
-	return (
-		wmc +
-		" " + getDit() +
-		" " + noc +
-		" " + cbo +
-		" " + rfc +
-		" " + lcom +
-		" " + getCa()+
-		" " + npm);
+        StringBuilder sb = new StringBuilder();
+        sb.append(wmc)
+           .append(" ").append(getDit())
+           .append(" ").append(noc)
+           .append(" ").append(cbo)
+           .append(" ").append(rfc)
+           .append(" ").append(lcom)
+           .append(" ").append(getCa())
+           .append(" ").append(npm);
+        return sb.toString();
     }
 
     /** Mark the instance as visited by the metrics analyzer */
@@ -137,3 +144,4 @@ public class ClassMetrics {
      */
     public boolean isVisited() { return visited; }
 }
+

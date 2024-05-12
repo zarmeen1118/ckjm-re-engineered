@@ -23,13 +23,13 @@ import java.io.PrintStream;
  * @author Julien Rentrop
  */
 public class PrintPlainResults implements CkjmOutputHandler {
-    private PrintStream p;
+    private final PrintStream printStream;
 
-    public PrintPlainResults (PrintStream p) {
-        this.p = p;
+    public PrintPlainResults(PrintStream printStream) {
+        this.printStream = printStream;
     }
 
-    public void handleClass(String name, ClassMetrics c) {
-        p.println(name + " " + c.toString());
+    public void handleClass(String className, ClassMetrics classMetrics) {
+        printStream.println(className + " " + classMetrics);
     }
 }
