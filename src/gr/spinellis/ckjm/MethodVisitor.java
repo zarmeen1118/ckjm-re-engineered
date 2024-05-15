@@ -41,11 +41,11 @@ class MethodVisitor extends EmptyVisitor {
     private ClassMetrics classMetrics;
 
     /** Constructor. */
-    MethodVisitor(MethodGen methodGen, ClassVisitor classVisitor) {
-        this.methodGen = methodGen;
-        this.classVisitor = classVisitor;
-        this.constantPool = methodGen.getConstantPool();
-        this.classMetrics = classVisitor.getMetrics();
+    MethodVisitor(MethodGen _methodGen, ClassVisitor _classVisitor) {
+        methodGen = _methodGen;
+        classVisitor = _classVisitor;
+        constantPool = _methodGen.getConstantPool();
+        classMetrics = _classVisitor.getMetrics();
     }
 
     /** Start the method's visit. */
@@ -57,11 +57,17 @@ class MethodVisitor extends EmptyVisitor {
     }
 
     private void visitInstructions() {
+        for (
+            InstructionHandle instructionHandle = methodGen.getInstructionList().getStart();
+		    instructionHandle != null;
+            instructionHandle = instructionHandle.getNext()
+        ) {
             Instruction instruction = instructionHandle.getInstruction();
 
             if (!isVisitableInstruction(instruction)) {
                 instruction.accept(this);
             }
+	    }
     }
 
     private boolean isVisitableInstruction(Instruction instruction) {
